@@ -4,24 +4,40 @@ import axios from "axios";
 
 function PokemonCard({name}) {
     const [pokemon, setPokemon] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
+
 
     useEffect(() => {
+        const abortController = new AbortController();
         async function fetchPokemonCard() {
             try {
-                const result = await axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`);
+                setIsLoading(true);
+                setError(false);
+                const result = await axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`, {
+                    signal: abortController.signal,
+                });
                 setPokemon(result.data);
-                console.log(result)
+                // console.log(result)
             } catch (e) {
                 console.error(e);
+                // setError("something went wrong");
+            } finally {
+                setIsLoading(false);
             }
-
         }
 
         fetchPokemonCard();
+        return () => {
+            console.log("Clean up");
+            abortController.abort();
+        };
     }, []);
 
     return (
         <>
+            {isLoading && <h3>Loading...</h3>}
+            {error && <h2>{error}</h2>}
             {
                 Object.keys(pokemon).length > 0 && (
                     <div className="card">
@@ -30,10 +46,7 @@ function PokemonCard({name}) {
                         <p>Moves: {pokemon.moves.length}</p>
                         <p>Weight: {pokemon.weight}</p>
                         <p>Abilities</p>
-                        <ul>
-                            <li><p>{pokemon.abilities[0].ability.name}</p></li>
-                            <li><p>{pokemon.abilities[1].ability.name}</p></li>
-                        </ul>
+                        <p>{pokemon.abilities[0].ability.name}</p>
                     </div>
                 )
             }
