@@ -32,12 +32,11 @@ function PokemonCard({name}) {
             console.log("Clean up");
             abortController.abort();
         };
-    }, []);
+    }, [name]);
 
     return (
         <>
-            {isLoading && <h3>Loading...</h3>}
-            {error && <h2>{error}</h2>}
+
             {
                 Object.keys(pokemon).length > 0 && (
                     <div className="card">
