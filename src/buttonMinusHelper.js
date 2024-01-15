@@ -1,6 +1,6 @@
 
 
-function buttonMinusHelper (prev, number) {
+function buttonMinusHelper (number) {
 
     if (number === 0) {
         return 0

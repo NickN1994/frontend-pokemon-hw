@@ -53,11 +53,11 @@ function App() {
         setNumber(buttonAddHelper(number))
     }
 
-    // const isdisabled = () => {
-    //     if (number === 0) {
-    //         return disabled;
-    //     }
-    // }
+    const isdisabled = () => {
+        if (number === 0) {
+            return true;
+        }
+    }
 
 
     return (
@@ -68,7 +68,7 @@ function App() {
                     {isLoading && <h3>Loading...</h3>}
                     {error && <h2>{error}</h2>}
                     <div>
-                        <button type="button" onClick={prevClick}>Vorige</button>
+                        <button type="button" onClick={prevClick} disabled={isdisabled}>Vorige</button>
                         <button type="button" onClick={nextClick}>Volgende</button>
                     </div>
                     <div className="cardsRow">
