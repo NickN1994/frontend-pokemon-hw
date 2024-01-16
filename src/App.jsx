@@ -2,13 +2,17 @@ import './App.css'
 import {useEffect, useState} from "react";
 import PokemonCard from "./PokemonCard.jsx";
 import axios from "axios";
+import buttonMinusHelper from "./buttonMinusHelper.js";
+import buttonAddHelper from "./buttonAddHelper.js";
 
 function App() {
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const [pokemons, setPokemons] = useState([]);
-    const [endpoint, setEndpoint] = useState(["https://pokeapi.co/api/v2/pokemon/?offset=0&limit=20"]);
+    const [endpoint, setEndpoint] = useState("https://pokeapi.co/api/v2/pokemon/");
+    const [number, setNumber] = useState(0);
+    // const [minusTwenty, setMinusTwenty] = useState(0);
 
 
 
@@ -20,7 +24,8 @@ function App() {
             try {
                 setIsLoading(true);
                 setError(false);
-                const response = await axios.get("https://pokeapi.co/api/v2/pokemon/?offset=0&limit=20", {
+                // const response = await axios.get(endpoint, {
+                const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/?offset=${number}&limit=20`, {
                     signal: abortController.signal,
                 });
                 // console.log(response.data.results)
@@ -37,8 +42,22 @@ function App() {
             console.log("Clean up");
             abortController.abort();
         };
-    }, []);
+    }, [number]);
 
+    const prevClick = () => {
+
+        setNumber(buttonMinusHelper(number))
+    }
+
+    const nextClick = () => {
+        setNumber(buttonAddHelper(number))
+    }
+
+    const isdisabled = () => {
+        if (number === 0) {
+            return true;
+        }
+    }
 
 
     return (
@@ -49,8 +68,8 @@ function App() {
                     {isLoading && <h3>Loading...</h3>}
                     {error && <h2>{error}</h2>}
                     <div>
-                        <button type="button">Vorige</button>
-                        <button type="button">Volgende</button>
+                        <button type="button" onClick={prevClick} disabled={isdisabled}>Vorige</button>
+                        <button type="button" onClick={nextClick}>Volgende</button>
                     </div>
                     <div className="cardsRow">
 
@@ -63,6 +82,7 @@ function App() {
                         )
                     })}
                     </div>
+
                 </div>
             </div>
 
